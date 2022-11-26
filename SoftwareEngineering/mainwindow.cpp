@@ -9,19 +9,25 @@ MainWindow::MainWindow(QWidget *parent) :
     setFixedSize(1600,900);
     textFile1=new QTextEdit(this);
     textFile2=new QTextEdit(this);
+    lineFile1=new QLineEdit(this);
+    lineFile2=new QLineEdit(this);
     button1=new QPushButton(this);
     button2=new QPushButton(this);
     button3=new QPushButton(this);
     textFile1->setGeometry(0,100,800,800);
     textFile2->setGeometry(800,100,800,800);
-    button1->setGeometry(1000,50,100,30);
+    lineFile1->setGeometry(0,70,380,30);
+    lineFile2->setGeometry(800,70,380,30);
+    button1->setGeometry(1200,50,100,30);
     button1->setText("Equal");
-    button2->setGeometry(1200,50,100,30);
+    button2->setGeometry(1350,50,100,30);
     button2->setText("Inequal");
-    button3->setGeometry(1400,50,100,30);
+    button3->setGeometry(1500,50,100,30);
     button3->setText("Doubt");
     textFile1->setReadOnly(true);
     textFile2->setReadOnly(true);
+    lineFile1->setReadOnly(true);
+    lineFile2->setReadOnly(true);
 
 
     LoadFile();
@@ -47,13 +53,13 @@ void MainWindow::ShowNextFile()
 {
     QString str;
     QString file1Road="";
-    QString file2Road="";
-    str=myMap[nowLineNumber];
-    if(nowLineNumber>=myMap.size())
+    QString file2Road="";    
+    if(nowLineNumber>myMap.size())
     {
         QMessageBox::information(this,"WOOO!!!","You have done!");
         this->close();
     }
+    str=myMap[nowLineNumber];
     int tempi=0;
     for(;str[tempi]!=",";tempi++)
     {
@@ -75,11 +81,68 @@ void MainWindow::ShowNextFile()
     if(!file2.open(QIODevice::ReadOnly|QIODevice::Text)){
             qDebug()<<file2Road<<"文件打开失败";
         }
-    QString text1=file1.readAll();
+    /*QString text1=file1.readAll();
     QString text2=file2.readAll();
-
+    textFile1->setFont(QFont(tr("Consolas"), 14));
+    textFile2->setFont(QFont(tr("Consolas"), 14));
     textFile1->setText(text1);
-    textFile2->setText(text2);
+    textFile2->setText(text2);*/
+    QTextStream in1(&file1);
+    QTextStream in2(&file2);
+    QString code1;
+    QString code2;
+    int num1=1;
+    int num2=1;
+    bool tag1=true;
+    bool tag2=true;
+    textFile1->clear();
+    textFile2->clear();
+    textFile1->setFont(QFont(tr("Consolas"), 14));
+    textFile2->setFont(QFont(tr("Consolas"), 14));
+    while(!in1.atEnd()&&!in2.atEnd())
+    {
+        if(!in1.atEnd()&&tag1)
+        {
+            code1=in1.readLine();
+        }
+        if(!in2.atEnd()&&tag2)
+        {
+            code2=in2.readLine();
+        }
+//        qDebug()<<code1;
+//        qDebug()<<code2<<endl;
+        if(code1==code2)
+        {
+
+            textFile1->append(QString::number(num1++)+"     "+code1);
+            textFile2->append(QString::number(num2++)+"     "+code2);
+            tag1=true;
+            tag2=true;
+        }
+        else
+        {
+            textFile1->append(QString::number(num1++)+"      "+code1);
+            textFile2->append("//////////////////////////////////////////////////");
+            tag1=true;
+            tag2=false;
+        }
+    }
+    if(!tag2)
+    {
+        textFile2->append(QString::number(num2++)+"      "+code2);
+    }
+    while(!in1.atEnd())
+    {
+        code1=in1.readLine();
+        textFile1->append(QString::number(num1++)+"      "+code1);
+    }
+    while(!in2.atEnd())
+    {
+        code2=in2.readLine();
+        textFile2->append(QString::number(num2++)+"      "+code2);
+    }
+    lineFile1->setText(file1Road);
+    lineFile2->setText(file2Road);
     file1.close();
     file2.close();
 }
@@ -185,7 +248,7 @@ void MainWindow::LoadFile()
     }
     file1.close();
 
-    QFile file2("../SoftwareEngineering/inequal.csv");
+    /*QFile file2("../SoftwareEngineering/inequal.csv");
     if(!file2.open(QIODevice::ReadOnly|QIODevice::Text)){
             qDebug()<<"inequal.csv文件打开失败";
         }
@@ -200,5 +263,5 @@ void MainWindow::LoadFile()
         }
         myMap[tempNumber++]=strrr;
     }
-    file2.close();
+    file2.close();*/
 }

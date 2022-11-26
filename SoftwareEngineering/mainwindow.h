@@ -5,10 +5,12 @@
 #include <QFile>
 #include <QTextStream>
 #include <QTextEdit>
+#include <QLineEdit>
 #include <QPushButton>
 #include <QDebug>
 #include <QMap>
 #include <QMessageBox>
+#include <QTextCharFormat>
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +27,8 @@ private:
 
     QTextEdit* textFile1;
     QTextEdit* textFile2;
+    QLineEdit* lineFile1;
+    QLineEdit* lineFile2;
     QPushButton* button1;
     QPushButton* button2;
     QPushButton* button3;
